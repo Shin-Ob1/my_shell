@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <dirent.h>
 #include "main.h"
 
 /**
@@ -58,5 +59,76 @@ void release_strings(char **argv)
 		j++;
 	}
 }
+
+/**
+ * ch_wd - changes the current working directory
+ * @dir: pointer to a string ewith directory path
+ *
+ * Return: 0 if fails and 1 if success
+ */
+
+char *ch_fn(char *fn)
+{
+	DIR *dir;
+	char *fname, *nfname;
+	struct dirent* entity;	
+	char req_dir[1024] = "/bin/";
+
+	dir = opendir(req_dir);
+	/*fn = "ls";*/
+	if (dir == NULL)
+	{
+		return NULL;
+	}
+
+	entity = readdir(dir);
+	printf("fn = %s\n", fn);
+	while (entity != NULL)
+	{
+		fname = entity->d_name;
+		/*printf("%s\n", entity->d_name);*/
+		if (strcmp(fname, fn) == 0)
+		{
+			printf("function found\n");
+			nfname = (char *)malloc(1024);
+			nfname = strcat(req_dir, fname);
+			printf("New function: %s\n", nfname);
+			closedir(dir);
+			return (nfname);
+		}		
+		entity = readdir(dir);
+	}
+	closedir(dir);
+
+	return NULL;
+}
+
+
+/**
+ * char *ch_fn(char *fn)
+{
+	DIR *dir;
+	char *nfn;
+	struct dirent *entity;
+		
+	dir = opendir("/bin");
+	if (dir == NULL)
+	{
+		printf("Opening /bin directory failed\n");
+		exit(99);
+	}
+	entity = readdir(dir);
+	while (entity != NULL)
+	{
+		if (entity->d_name == fn)
+		{
+			printf("function exists in/bin\n");
+		}
+		entity = readdir(dir);
+	}
+	nfn = fn;
+	closedir(dir);
+	return (nfn);
+}*/
 
 
